@@ -1,13 +1,15 @@
-<?php namespace Collective\Annotations\Console;
+<?php
 
+namespace Collective\Annotations\Console;
+
+use Collective\Annotations\Routing\Annotations\Scanner;
+use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Collective\Annotations\Routing\Annotations\Scanner;
 use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Console\AppNamespaceDetectorTrait;
 
-class RouteScanCommand extends Command {
-
+class RouteScanCommand extends Command
+{
     use AppNamespaceDetectorTrait;
 
     /**
@@ -34,7 +36,8 @@ class RouteScanCommand extends Command {
     /**
      * Create a new event scan command instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param \Illuminate\Filesystem\Filesystem $files
+     *
      * @return void
      */
     public function __construct(Filesystem $files)
@@ -95,5 +98,4 @@ class RouteScanCommand extends Command {
           ['path', null, InputOption::VALUE_OPTIONAL, 'The path to scan.', 'Http'.DIRECTORY_SEPARATOR.'Controllers'],
         ];
     }
-
 }

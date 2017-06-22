@@ -1,14 +1,16 @@
-<?php namespace Collective\Annotations;
+<?php
+
+namespace Collective\Annotations;
 
 use Collective\Annotations\Console\EventScanCommand;
 use Collective\Annotations\Console\RouteScanCommand;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Support\ServiceProvider;
 use Collective\Annotations\Events\Annotations\Scanner as EventScanner;
 use Collective\Annotations\Routing\Annotations\Scanner as RouteScanner;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\ServiceProvider;
 
-class AnnotationsServiceProvider extends ServiceProvider {
-
+class AnnotationsServiceProvider extends ServiceProvider
+{
     /**
      * The commands to be registered.
      *
@@ -75,8 +77,7 @@ class AnnotationsServiceProvider extends ServiceProvider {
     {
         $this->loadAnnotatedEvents();
 
-        if ( ! $this->app->routesAreCached())
-        {
+        if (!$this->app->routesAreCached()) {
             $this->loadAnnotatedRoutes();
         }
     }
@@ -88,14 +89,12 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function registerCommands()
     {
-        foreach (array_keys($this->commands) as $command)
-        {
+        foreach (array_keys($this->commands) as $command) {
             $method = "register{$command}Command";
             call_user_func_array([$this, $method], []);
         }
         $this->commands(array_values($this->commands));
     }
-
 
     /**
      * Register the command.
@@ -104,8 +103,7 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function registerEventScanCommand()
     {
-        $this->app->singleton('command.event.scan', function ($app)
-        {
+        $this->app->singleton('command.event.scan', function ($app) {
             return new EventScanCommand($app['files']);
         });
     }
@@ -117,8 +115,7 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function registerRouteScanCommand()
     {
-        $this->app->singleton('command.route.scan', function ($app)
-        {
+        $this->app->singleton('command.route.scan', function ($app) {
             return new RouteScanCommand($app['files']);
         });
     }
@@ -130,13 +127,11 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     public function loadAnnotatedEvents()
     {
-        if ($this->app->environment('local') && $this->scanWhenLocal)
-        {
+        if ($this->app->environment('local') && $this->scanWhenLocal) {
             $this->scanEvents();
         }
 
-        if ( ! empty($this->scanEvents) && $this->finder->eventsAreScanned())
-        {
+        if (!empty($this->scanEvents) && $this->finder->eventsAreScanned()) {
             $this->loadScannedEvents();
         }
     }
@@ -148,15 +143,14 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function scanEvents()
     {
-        if (empty($this->scanEvents))
-        {
+        if (empty($this->scanEvents)) {
             return;
         }
 
         $scanner = new EventScanner($this->scanEvents);
 
         file_put_contents(
-          $this->finder->getScannedEventsPath(), '<?php ' . $scanner->getEventDefinitions()
+          $this->finder->getScannedEventsPath(), '<?php '.$scanner->getEventDefinitions()
         );
     }
 
@@ -173,19 +167,17 @@ class AnnotationsServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Load the annotated routes
+     * Load the annotated routes.
      *
      * @return void
      */
     protected function loadAnnotatedRoutes()
     {
-        if ($this->app->environment('local') && $this->scanWhenLocal)
-        {
+        if ($this->app->environment('local') && $this->scanWhenLocal) {
             $this->scanRoutes();
         }
 
-        if ( ! empty($this->scanRoutes) && $this->finder->routesAreScanned())
-        {
+        if (!empty($this->scanRoutes) && $this->finder->routesAreScanned()) {
             $this->loadScannedRoutes();
         }
     }
@@ -197,15 +189,14 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function scanRoutes()
     {
-        if (empty($this->scanRoutes))
-        {
+        if (empty($this->scanRoutes)) {
             return;
         }
 
         $scanner = new RouteScanner($this->scanRoutes);
 
         file_put_contents(
-          $this->finder->getScannedRoutesPath(), '<?php ' . $scanner->getRouteDefinitions()
+          $this->finder->getScannedRoutesPath(), '<?php '.$scanner->getRouteDefinitions()
         );
     }
 
@@ -216,8 +207,7 @@ class AnnotationsServiceProvider extends ServiceProvider {
      */
     protected function loadScannedRoutes()
     {
-        $this->app->booted(function ()
-        {
+        $this->app->booted(function () {
             $router = $this->app['Illuminate\Contracts\Routing\Registrar'];
 
             require $this->finder->getScannedRoutesPath();

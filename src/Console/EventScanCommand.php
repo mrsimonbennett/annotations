@@ -1,12 +1,14 @@
-<?php namespace Collective\Annotations\Console;
+<?php
 
+namespace Collective\Annotations\Console;
+
+use Collective\Annotations\Events\Annotations\Scanner;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Collective\Annotations\Events\Annotations\Scanner;
 use Symfony\Component\Console\Input\InputOption;
 
-class EventScanCommand extends Command {
-
+class EventScanCommand extends Command
+{
     /**
      * The console command name.
      *
@@ -31,7 +33,8 @@ class EventScanCommand extends Command {
     /**
      * Create a new event scan command instance.
      *
-     * @param  \Illuminate\Filesystem\Filesystem  $files
+     * @param \Illuminate\Filesystem\Filesystem $files
+     *
      * @return void
      */
     public function __construct(Filesystem $files)
@@ -88,5 +91,4 @@ class EventScanCommand extends Command {
           ['path', null, InputOption::VALUE_OPTIONAL, 'The path to scan.'],
         ];
     }
-
 }
